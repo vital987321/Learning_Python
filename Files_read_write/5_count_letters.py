@@ -1,6 +1,6 @@
 # task 5
 # read zen_of_python.txt
-# Count numbher of rows, words and letters.
+# Count number of rows, words and letters.
 # Find the lest used letter in the text.
 
 import string
@@ -18,6 +18,10 @@ for symbol in symbols:
     if symbol.isalpha():
         letters_number+=1
         alphabet_count[symbol]+=1
-ml = reduce(lambda x, y: alphabet_count[x] if alphabet_count[x]>alphabet_count[y] else alphabet_count[x] , alphabet_count)
-# ml=reduce(lambda x, y:x if int(x.values())>int(y.values()) else y,alphabet_count)
-print(ml)
+
+least_used_letter = reduce(lambda x, y: x if alphabet_count[x]<alphabet_count[y] else y , alphabet_count,'a')
+
+print(f'Number of rows: {rows_number}')
+print(f'Number of words: {words_number}')
+print(f'Number of letters: {letters_number}')
+print(f'The least used letter is "{least_used_letter}". It is used {alphabet_count[least_used_letter]} times.')

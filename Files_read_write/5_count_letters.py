@@ -5,21 +5,22 @@
 
 import string
 from functools import reduce
+
 with open('zen_of_Python.txt') as file:
     lines = file.readlines()
-rows_number=len(lines)
-words='\n'.join(lines).split()
-words_number=len(words)
-symbols=''.join(words).lower()
-letters_number=0
-alphabet_count={letter:0 for letter in string.ascii_lowercase}
+rows_number = len(lines)
+words = '\n'.join(lines).split()
+words_number = len(words)
+symbols = ''.join(words).lower()
+letters_number = 0
+alphabet_count = {letter: 0 for letter in string.ascii_lowercase}
 
 for symbol in symbols:
     if symbol.isalpha():
-        letters_number+=1
-        alphabet_count[symbol]+=1
+        letters_number += 1
+        alphabet_count[symbol] += 1
 
-least_used_letter = reduce(lambda x, y: x if alphabet_count[x]<alphabet_count[y] else y , alphabet_count,'a')
+least_used_letter = reduce(lambda x, y: x if alphabet_count[x] < alphabet_count[y] else y, alphabet_count, 'a')
 
 print(f'Number of rows: {rows_number}')
 print(f'Number of words: {words_number}')

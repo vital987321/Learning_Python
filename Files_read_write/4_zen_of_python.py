@@ -3,7 +3,7 @@
 # Output all statements in reversed order
 
 with open('zen_of_Python.txt') as input_file:
-    text=input_file.read()
-lines=text.split('\n')
+    text = input_file.read()
+lines = text.split('\n')
 for line in lines[::-1]:
-    print (line)
+    print(line)

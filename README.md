@@ -1,2 +1,2 @@
 # Learning_Python
-Homeworks, and test tasks while studying python.
+School Homeworks, Shcool classworks, test tasks and self tasks while studying python.

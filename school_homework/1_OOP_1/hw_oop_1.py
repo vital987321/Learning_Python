@@ -11,12 +11,12 @@
 # 1.8) Magic метод(ы) для сравнения двух групп
 # 1.9) Написать функцию которая принимает список групп, а возвращает самую успешную и самую не успешную группу
 
-
+from typing import Iterable
 class Student:
     name: str
     marks: list[int]
 
-    def __init__(self, name: str, marks: iter) -> None:
+    def __init__(self, name: str, marks: Iterable) -> None:
         self.name = name
         self.marks = list(marks)
 
@@ -26,7 +26,7 @@ class Student:
     def __average(self) -> float:
         return sum(self.marks) / len(self.marks)
 
-    def addmakr(self, mark: int) -> None:
+    def add_makr(self, mark: int) -> None:
         self.marks.append(mark)
 
     def __gt__(self, other) -> bool:
@@ -48,14 +48,14 @@ class Group:
         marks = [mark for student in self.students for mark in student.marks]
         return sum(marks) / len(marks)
 
-    def addstudent(self, student: Student) -> None:
+    def add_student(self, student: Student) -> None:
         self.students.append(student)
 
     def __gt__(self, other) -> bool:
         return self.__average() > other.__average()
 
 
-def bestworstgroup(groups: iter) -> tuple[Group, Group]:
+def bestworstgroup(groups: Iterable) -> tuple[Group, Group]:
     # Влад, вопрос по анотированю для этой функции. Если указать тип (groups: list[Group]),
     # то сразу понятно какие елементи списка будут использоваться (Group).
     # Но я хочу не list, а любой итерируэмый обьект. iter[Group] - не работает.
@@ -70,7 +70,7 @@ student3 = Student('Lisa', (4, 5, 4, 5, 4, 5, 4))
 student4 = Student('Olga', [5, 5, 5, 5, 5])
 gr1 = Group('gA', (student1, student2))
 gr2 = Group('gB', (student3,))
-gr2.addstudent(student4)
+gr2.add_student(student4)
 
 worst, best = bestworstgroup((gr1, gr2))
 print(f'The best group is {best}, the worst is {worst}.')

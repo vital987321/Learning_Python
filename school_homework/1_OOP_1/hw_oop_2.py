@@ -18,7 +18,7 @@ class Animal:
         self.color = color
 
     def speak(self):
-        pass
+        raise NotImplementedError
 
 
 class DictMixin():

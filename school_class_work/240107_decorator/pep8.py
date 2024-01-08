@@ -1,5 +1,7 @@
 class Blob:
     pass
+
+
 class Rectangle(Blob):
     def __init__(self, width, height,
                  color='black', emphasis=None, highlight=0):
@@ -12,3 +14,8 @@ class Rectangle(Blob):
             raise ValueError(f"I don't think so -- values are {width}, {height}")
         Blob.__init__(self, width, height,
                       color, emphasis, highlight)
+
+
+print(super_puper_value_1
+      + super_puper_value_2
+      + super_puper_value_3)

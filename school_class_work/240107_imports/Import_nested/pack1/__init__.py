@@ -1,2 +1,2 @@
-from module1 import a
+from .module1 import a
 print(a)

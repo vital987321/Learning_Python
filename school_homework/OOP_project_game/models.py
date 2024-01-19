@@ -12,11 +12,13 @@ class Participant():
 
 
 class Enemy(Participant):
-    def __int__(self):
+    lives: int
+
+    def __init__(self):
         self.lives = ENEMY_LIVES
 
     def attack(self) -> str:
-        return ALLOWED_ATTACKS[randint(1, 3)]
+        return ALLOWED_ATTACKS[str(randint(1, 3))]
 
     def decrease_lives(self):
         self.lives -= 1
@@ -36,7 +38,7 @@ class Player(Participant):
     def attack(self, enemy: Enemy):
         while True:
             try:
-                player_choice = input('Select attack:\n\t1 - Paper\n\t2 - Stone\n\t3 - Scissors')
+                player_choice = input('Select attack:\n\t1 - Paper\n\t2 - Stone\n\t3 - Scissors\n')
                 if player_choice in ('1', '2', '3'):
                     player_attack = ALLOWED_ATTACKS[player_choice]
                     break
@@ -58,7 +60,7 @@ class Player(Participant):
 
     def fight(self, player_attack: str, enemy: Enemy):
         enemy_attack = enemy.attack()
-        print(f'Your attack: {player_attack}.  Enemy attack: {enemy_attack}')
+        print(f"Your attack: {player_attack}.  Enemy's attack: {enemy_attack}")
         if player_attack == enemy_attack:
             return 0
         elif player_attack == 'Paper' and enemy_attack == 'Stone':

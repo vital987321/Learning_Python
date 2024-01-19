@@ -11,21 +11,27 @@ def play():
     player = Player(name)
     enemy = Enemy()
     try:
-        player.attack(enemy)
-    except EnemyDown:
-        del enemy
-        print("Congratulation! Enemy down.")
-        player.score += POINTS_FOR_KILLING
-        enemy = Enemy()
-        print("\nNew enemy comes.")
+        while True:
+            get_status(player)
+            try:
+                player.attack(enemy)
+            except EnemyDown:
+                del enemy
+                print("Congratulation! Enemy down.")
+                player.score += POINTS_FOR_KILLING
+                enemy = Enemy()
+                print("\nNew enemy comes.")
+    except GameOver:
+        print('You lost!')
+    except KeyboardInterrupt:
+        print('Exit game')
+    finally:
+        get_status(player)
+        print('Good buy!')
 
+def get_status(player):
+    print(f'\nPlayer: {player.name}.\tLives: {player.lives}.\tScore: {player.score}')
 
 if __name__ == "__main__":
-    try:
-        play()
-    except GameOver:
-        pass
-    except KeyboardInterrupt:
-        pass
-    finally:
-        print('Good buy!')
+    play()
+

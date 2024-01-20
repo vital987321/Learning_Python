@@ -29,11 +29,13 @@ class Enemy(Participant):
 class Player(Participant):
     name: str
     score: int
+    level: str
 
-    def __init__(self, name):
+    def __init__(self, name, level="Normal"):
         self.name = name
         self.lives = PLAYER_LIVES
         self.score = 0
+        self.level = level
 
     def attack(self, enemy: Enemy):
         while True:

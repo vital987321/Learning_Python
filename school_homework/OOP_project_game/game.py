@@ -8,7 +8,7 @@ from settings import *
 
 def play():
     name = input("Enter your name: ")
-    level=input('Select level:\t 1-Normal.\t2-Hard: ')      # need validation
+    level = input('Select level:\t 1-Normal.\t2-Hard: ')  # need validation
     player = Player(name, level=LEVELS[level])
     enemy = Enemy()
     try:
@@ -32,7 +32,8 @@ def play():
         get_status(player)
         print('Good buy!')
 
-def save_score(player:Player):
+
+def save_score(player: Player):
     player_record = [player.name, player.level, player.score]
     with open('scores.txt', 'r') as file:
         lines = file.readlines()
@@ -54,18 +55,25 @@ def save_score(player:Player):
         for record in records:
             file.write(f'{record[0]}\t{record[1]}\t{record[2]}\n')
 
+
 def get_status(player):
     print(f'\nPlayer: {player.name}.\tLevel: {player.level}.\tLives: {player.lives}.\tScore: {player.score}')
 
+
 def main_menu():
-    print("\n----Main Menu----")
-    choice=input('Select command:\n\t1-Start new game\n\t2-Show scores\n\t3-Exit game\n\t') # validation needed
-    if choice=='1':
-        play()
-    elif choice=='2':
-        with open('scores.txt') as file:
-            print(file.read)
+    while True:
+        print("\n----Main Menu----")
+        choice = input('Select command:\n\t1-Start new game\n\t2-Show scores\n\t3-Exit game\n\t')
+        if choice == '1':
+            play()
+        elif choice == '2':
+            with open('scores.txt') as file:
+                print(file.read())
+        elif choice == '3':
+            raise KeyboardInterrupt()
+        else:
+            print('Incorrect command!')
+
+
 if __name__ == "__main__":
     main_menu()
-    # play()
-

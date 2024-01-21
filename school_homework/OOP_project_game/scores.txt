@@ -4,3 +4,4 @@ Stepan	Normal	6
 Nick	Normal	3
 Mike	Hard	2
 Alis	Normal	1
+vdfhv	Normal	0

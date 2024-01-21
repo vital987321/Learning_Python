@@ -83,7 +83,7 @@ class Player(Participant):
     def decrease_lives(self):
         self.lives -= 1
         if self.lives == 0:
-            raise GameOver()
+            raise GameOver(self.name, self.level, self.score)
 
     def on_win_fight(self, enemy: Enemy):
         self.score += POINTS_FOR_FIGHT

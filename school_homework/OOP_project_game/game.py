@@ -24,36 +24,33 @@ def play():
                 print("\nNew enemy comes.")
     except GameOver:
         print('You lost!')
-        save_score(player)
+        # save_score(player)
 
-    except KeyboardInterrupt:
-        print('Exit game')
     finally:
         get_status(player)
-        print('Good buy!')
 
 
-def save_score(player: Player):
-    player_record = [player.name, player.level, player.score]
-    with open('scores.txt', 'r') as file:
-        lines = file.readlines()
-    del lines[0]
-    records = [line.split() for line in lines]
-    record_exists = False
-    for i in range(len(records)):
-        if player_record[0] == records[i][0]:
-            record_exists = True
-            if player_record[2] > records[i][2]:
-                records[i] = player_record
-            break
-    if not record_exists:
-        records.append(player_record)
-    records = sorted(records, key=lambda x: int(x[2]), reverse=True)
-    records = records[:MAX_RECORDS_NUMBER]
-    with open('scores.txt', 'w') as file:
-        file.write('Name\tLevel\tScore\n')
-        for record in records:
-            file.write(f'{record[0]}\t{record[1]}\t{record[2]}\n')
+# def save_score(player: Player):
+#     player_record = [player.name, player.level, player.score]
+#     with open('scores.txt', 'r') as file:
+#         lines = file.readlines()
+#     del lines[0]
+#     records = [line.split() for line in lines]
+#     record_exists = False
+#     for i in range(len(records)):
+#         if player_record[0] == records[i][0]:
+#             record_exists = True
+#             if player_record[2] > records[i][2]:
+#                 records[i] = player_record
+#             break
+#     if not record_exists:
+#         records.append(player_record)
+#     records = sorted(records, key=lambda x: int(x[2]), reverse=True)
+#     records = records[:MAX_RECORDS_NUMBER]
+#     with open('scores.txt', 'w') as file:
+#         file.write('Name\tLevel\tScore\n')
+#         for record in records:
+#             file.write(f'{record[0]}\t{record[1]}\t{record[2]}\n')
 
 
 def get_status(player):
@@ -76,4 +73,7 @@ def main_menu():
 
 
 if __name__ == "__main__":
-    main_menu()
+    try:
+        main_menu()
+    except KeyboardInterrupt:
+        print('Good buy!')

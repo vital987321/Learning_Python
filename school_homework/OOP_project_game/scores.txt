@@ -1,7 +1,10 @@
 Name	Level	Score
 darkforce	Normal	7
+dgvb	Normal	7
 Stepan	Normal	6
 Nick	Normal	3
 Mike	Hard	2
 Alis	Normal	1
+sffs	Normal	1
 vdfhv	Normal	0
+dfsv	Normal	0

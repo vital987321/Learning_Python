@@ -3,19 +3,11 @@ from settings import *
 from random import randint
 
 
-class Participant():
-    level: int
+class Enemy():
     lives: int
 
-    def attack(self):
-        pass
-
-
-class Enemy(Participant):
-    lives: int
-
-    def __init__(self):
-        self.lives = ENEMY_LIVES
+    def __init__(self, level):
+        self.lives = ENEMY_LIVES if level=='Normal' else ENEMY_LIVES*HARD_MODE_MULTIPLIER
 
     def attack(self) -> str:
         return ALLOWED_ATTACKS[str(randint(1, 3))]
@@ -26,7 +18,7 @@ class Enemy(Participant):
             raise EnemyDown()
 
 
-class Player(Participant):
+class Player():
     name: str
     score: int
     level: str
@@ -40,14 +32,17 @@ class Player(Participant):
     def attack(self, enemy: Enemy):
         while True:
             try:
-                player_choice = input('Select attack:\n\t1 - Paper\n\t2 - Stone\n\t3 - Scissors\n')
-                if player_choice in ('1', '2', '3'):
-                    player_attack = ALLOWED_ATTACKS[player_choice]
-                    break
-                else:
-                    raise IncorrectUserAttackInput()
-            except (IncorrectUserAttackInput):
-                print(IncorrectUserAttackInput.error_message)
+                player_attack = ALLOWED_ATTACKS[input('Select attack:\n'
+                                                      '\t1 - Paper\n'
+                                                      '\t2 - Stone\n'
+                                                      '\t3 - Scissors\n'
+                                                      '\t(0 - Exit Game)\n'
+                                                      '\t: ')]
+                if player_attack=='Exit Game':
+                    raise KeyboardInterrupt()
+                break
+            except KeyError:
+                print('Incorrect input.')
         fight_result = self.fight(player_attack, enemy)
         if fight_result == 1:
             print('You attacked successfully!')
@@ -86,5 +81,5 @@ class Player(Participant):
             raise GameOver(self.name, self.level, self.score)
 
     def on_win_fight(self, enemy: Enemy):
-        self.score += POINTS_FOR_FIGHT
+        self.score += POINTS_FOR_FIGHT if self.level=='Normal' else POINTS_FOR_FIGHT*HARD_MODE_MULTIPLIER
         enemy.decrease_lives()

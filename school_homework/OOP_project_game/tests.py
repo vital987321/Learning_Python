@@ -1,3 +1,4 @@
-d={'1':'a',
-   '2':'b'}
-print(d['f'])
+s='a s     d'
+print(s.split())
+st='dd'
+print(f'a{st.ljust(3)}a')

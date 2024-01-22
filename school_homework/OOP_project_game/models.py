@@ -43,10 +43,10 @@ class Player():
                 break
             except KeyError:
                 print('Incorrect input.')
-        fight_result = self.fight(player_attack, enemy)
+        fight_result = self.__fight(player_attack, enemy)
         if fight_result == 1:
             print('You attacked successfully!')
-            self.on_win_fight(enemy)
+            self.__on_win_fight(enemy)
         elif fight_result == -1:
             print("You missed!")
             self.decrease_lives()
@@ -55,7 +55,7 @@ class Player():
         else:
             raise FightError
 
-    def fight(self, player_attack: str, enemy: Enemy):
+    def __fight(self, player_attack: str, enemy: Enemy):
         enemy_attack = enemy.attack()
         print(f"Your attack: {player_attack}.  Enemy's attack: {enemy_attack}")
         if player_attack == enemy_attack:
@@ -80,6 +80,6 @@ class Player():
         if self.lives == 0:
             raise GameOver(self.name, self.level, self.score)
 
-    def on_win_fight(self, enemy: Enemy):
+    def __on_win_fight(self, enemy: Enemy):
         self.score += POINTS_FOR_FIGHT if self.level=='Normal' else POINTS_FOR_FIGHT*HARD_MODE_MULTIPLIER
         enemy.decrease_lives()

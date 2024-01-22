@@ -1,4 +1,5 @@
 from settings import *
+from functools import reduce
 
 
 class GameOver(Exception):
@@ -19,10 +20,11 @@ class GameOver(Exception):
             records.append(player_record)
         records = sorted(records, key=lambda x: int(x[2]), reverse=True)
         records = records[:MAX_RECORDS_NUMBER]
+        name_column_size=reduce(lambda x,y:max(x,len(y[0])),records,0)+4
         with open(SCORE_FILE, 'w') as file:
-            file.write('Name\tLevel\tScore\n')
+            file.write(f'{"NAME".ljust(name_column_size)}{"LEVEL".ljust(10)}SCORE\n')
             for record in records:
-                file.write(f'{record[0]}\t{record[1]}\t{record[2]}\n')
+                file.write(f'{record[0].ljust(name_column_size)}{record[1].ljust(10)}{record[2]}\n')
 
 
 class EnemyDown(Exception):

@@ -24,14 +24,15 @@ def play():
             except EnemyDown:
                 del enemy
                 print("Congratulation! Enemy down.")
-                player.score += POINTS_FOR_KILLING if level=='Normal' else POINTS_FOR_KILLING*HARD_MODE_MULTIPLIER
+                player.score += POINTS_FOR_KILLING if level == 'Normal' else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER
                 enemy = Enemy(level)
                 print("\nNew enemy comes.")
     except GameOver:
         print('You lost!')
 
     finally:
-        get_status(player,enemy)
+        get_status(player, enemy)
+
 
 def get_status(player, enemy):
     print(f"\nPlayer: {player.name}."

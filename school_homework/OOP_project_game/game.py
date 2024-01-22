@@ -1,3 +1,5 @@
+""" This file is the entry file. Ran it to start."""
+
 from game_exceptions import GameOver
 from game_exceptions import EnemyDown
 from game_exceptions import KeyboardInterrupt
@@ -5,17 +7,35 @@ from models import Player
 from models import Enemy
 from settings import *
 
+__version__ = '1'
 
-def play():
-    name = input("Enter your name: ")
+
+def play() -> None:
+    '''Runs the main game'''
+
+    # input name
+    while True:
+        name = input("Enter your name: ")
+        if ' ' in name:
+            print("Whitespaces are not allowed in the name.")
+        elif not name:
+            pass
+        else:
+            break
+
+    # input level
     while True:
         try:
             level = LEVELS[input('Select level:\t 1-Normal.\t2-Hard: ')]
             break
         except KeyError:
             print('Incorrect input.')
+
+    # make players
     player = Player(name, level=level)
     enemy = Enemy(level)
+
+    # main fight
     try:
         while True:
             get_status(player, enemy)
@@ -27,6 +47,7 @@ def play():
                 player.score += POINTS_FOR_KILLING if level == 'Normal' else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER
                 enemy = Enemy(level)
                 print("\nNew enemy comes.")
+
     except GameOver:
         print('You lost!')
 
@@ -34,7 +55,8 @@ def play():
         get_status(player, enemy)
 
 
-def get_status(player, enemy):
+def get_status(player, enemy) -> None:
+    '''Prints the current game status to console'''
     print(f"\nPlayer: {player.name}."
           f"\tLevel: {player.level}."
           f"\tLives: {player.lives}."
@@ -42,7 +64,8 @@ def get_status(player, enemy):
           f"\tEnemy's lives: {enemy.lives}")
 
 
-def main_menu():
+def main_menu() -> None:
+    '''Displays the main menu of the game'''
     while True:
         print("\n----Main Menu----")
         choice = input('Select command:\n'

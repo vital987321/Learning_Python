@@ -1,14 +1,23 @@
+""" User defined Exceptions """
+
 from settings import *
 from functools import reduce
 
 
 class GameOver(Exception):
-    def __init__(self, name: str, level: str, score: int):
+    '''raised if player lost all lives'''
+
+    def __init__(self, name: str, level: str, score: int) -> None:
+        """Saves player score to the board (text file)"""
         player_record = [name, level, score]
+
+        # reads records from file to list
         with open(SCORE_FILE, 'r') as file:
             lines = file.readlines()
         del lines[0]
         records = [line.split() for line in lines]
+
+        # add current result to list
         record_exists = False
         for i in range(len(records)):
             if player_record[0] == records[i][0]:
@@ -20,7 +29,9 @@ class GameOver(Exception):
             records.append(player_record)
         records = sorted(records, key=lambda x: int(x[2]), reverse=True)
         records = records[:MAX_RECORDS_NUMBER]
-        name_column_size=reduce(lambda x,y:max(x,len(y[0])),records,0)+4
+
+        # save list to file
+        name_column_size = reduce(lambda x, y: max(x, len(y[0])), records, 0) + 4
         with open(SCORE_FILE, 'w') as file:
             file.write(f'{"NAME".ljust(name_column_size)}{"LEVEL".ljust(10)}SCORE\n')
             for record in records:
@@ -28,13 +39,18 @@ class GameOver(Exception):
 
 
 class EnemyDown(Exception):
+    """Raised in case enemy lost all lives"""
     pass
 
 
 class KeyboardInterrupt(Exception):
+    """Raised if user send command to exit the unfinished game"""
+
     def __init__(self):
         print('Exit game')
 
 
 class FightError(Exception):
+    """Raised if __fight method got wrong inputs.
+    Normally not expected"""
     pass

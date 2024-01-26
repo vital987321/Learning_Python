@@ -4,7 +4,7 @@ ALLOWED_ATTACKS = {'1': 'Paper',
                    '2': 'Stone',
                    '3': 'Scissors',
                    '0': 'Exit Game'}
-LEVELS = {'1': "Normal",
+MODES = {'1': "Normal",
           '2': "Hard"}
 PLAYER_LIVES = 2
 ENEMY_LIVES = 2

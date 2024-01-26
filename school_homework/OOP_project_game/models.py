@@ -1,7 +1,18 @@
 """ module contains Enemy Class and Player Class"""
 
-from game_exceptions import *
-from settings import *
+from game_exceptions import GameOver, \
+    EnemyDown, \
+    KeyboardInterrupt, \
+    FightError
+from settings import ALLOWED_ATTACKS,\
+    MODES,\
+    PLAYER_LIVES,\
+    ENEMY_LIVES,\
+    POINTS_FOR_FIGHT,\
+    POINTS_FOR_KILLING,\
+    MAX_RECORDS_NUMBER,\
+    HARD_MODE_MULTIPLIER,\
+    SCORE_FILE
 from random import randint
 
 
@@ -9,8 +20,8 @@ class Enemy():
     """Class represents the enemy bot player"""
     lives: int
 
-    def __init__(self, level: str):
-        self.lives = ENEMY_LIVES if level == 'Normal' else ENEMY_LIVES * HARD_MODE_MULTIPLIER
+    def __init__(self, mode: str):
+        self.lives = ENEMY_LIVES if mode == 'Normal' else ENEMY_LIVES * HARD_MODE_MULTIPLIER
 
     def attack(self) -> str:
         """randomly returns one of possible enemy's attack"""
@@ -27,13 +38,13 @@ class Player():
     """Class describes user's player"""
     name: str
     score: int
-    level: str
+    mode: str
 
-    def __init__(self, name: str, level: str):
+    def __init__(self, name: str, mode: str):
         self.name = name
         self.lives = PLAYER_LIVES
         self.score = 0
-        self.level = level
+        self.mode = mode
 
     def attack(self, enemy: Enemy) -> None:
         """
@@ -95,9 +106,12 @@ class Player():
         """Decreases player's lives"""
         self.lives -= 1
         if self.lives == 0:
-            raise GameOver(self.name, self.level, self.score)
+            raise GameOver(self.name, self.mode, self.score)
+
+    def add_score(self):
+        self.score += POINTS_FOR_KILLING if self.mode == 'Normal' else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER
 
     def __on_win_fight(self, enemy: Enemy) -> None:
         """Adds score in case successful fight"""
-        self.score += POINTS_FOR_FIGHT if self.level == 'Normal' else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
+        self.score += POINTS_FOR_FIGHT if self.mode == 'Normal' else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
         enemy.decrease_lives()

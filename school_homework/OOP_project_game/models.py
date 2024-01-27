@@ -4,13 +4,11 @@ from game_exceptions import GameOver, \
     EnemyDown, \
     QuitApp
 from settings import ALLOWED_ATTACKS, \
-    MODES, \
+    MODE_NORMAL, \
     PLAYER_LIVES, \
     POINTS_FOR_FIGHT, \
     POINTS_FOR_KILLING, \
-    MAX_RECORDS_NUMBER, \
     HARD_MODE_MULTIPLIER, \
-    SCORE_FILE, \
     PAPER, \
     STONE, \
     SCISSORS
@@ -25,13 +23,13 @@ class Enemy():
 
     def __init__(self, mode: str, level: int):
         self.level = level
-        self.lives = self.level if mode == 'Normal' else self.level * HARD_MODE_MULTIPLIER
+        self.lives = self.level if mode == MODE_NORMAL else self.level * HARD_MODE_MULTIPLIER
 
     def attack(self) -> str:
         """randomly returns one of possible enemy's attack"""
         return ALLOWED_ATTACKS[str(randint(1, 3))]
 
-    def decrease_lives(self):
+    def decrease_lives(self) -> None:
         """Decrease enemy's lives"""
         self.lives -= 1
         if self.lives == 0:
@@ -73,10 +71,8 @@ class Player():
                 return ALLOWED_ATTACKS[attack_input]
 
     def attack(self, enemy: Enemy) -> None:
-        """
-        Asks the user to choose the attack.
-        Calls the fight method.
-        """
+        """Asks the user to choose the attack.
+        Calls the fight method."""
         # select player attack
         player_attack = self.__input_attack()
         # fight
@@ -118,10 +114,10 @@ class Player():
     def on_enemy_down(self):
         """ Adds score on enemy down."""
         print("Congratulation! Enemy down.")
-        self.score += POINTS_FOR_KILLING if self.mode == 'Normal' else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER
+        self.score += POINTS_FOR_KILLING if self.mode == MODE_NORMAL else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER
 
     def __on_win_fight(self, enemy: Enemy) -> None:
         """Adds score in case successful fight.
         calls enemy's method to decrease lives."""
-        self.score += POINTS_FOR_FIGHT if self.mode == 'Normal' else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
+        self.score += POINTS_FOR_FIGHT if self.mode == MODE_NORMAL else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
         enemy.decrease_lives()

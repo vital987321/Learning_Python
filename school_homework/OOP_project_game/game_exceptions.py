@@ -1,12 +1,8 @@
 """ User defined Exceptions """
 
-from settings import *
-
-
 
 class GameOver(Exception):
     """raised if player lost all lives"""
-
 
 
 class EnemyDown(Exception):
@@ -16,4 +12,3 @@ class EnemyDown(Exception):
 
 class QuitApp(Exception):
     """Raised if user send command to exit the unfinished game"""
-

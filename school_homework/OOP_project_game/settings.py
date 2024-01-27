@@ -6,6 +6,8 @@ ALLOWED_ATTACKS = {'1': 'Paper',
                    '0': 'Exit Game'}
 MODES = {'1': "Normal",
          '2': "Hard"}
+MODE_NORMAL = 'Normal'
+MODE_HARD = 'Hard'
 PLAYER_LIVES = 2
 POINTS_FOR_FIGHT = 1
 POINTS_FOR_KILLING = 5

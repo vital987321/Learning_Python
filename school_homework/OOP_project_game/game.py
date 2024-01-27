@@ -1,14 +1,11 @@
-""" This file is the entry file. Ran it to start."""
+""" This file is the entry file. Run it to start."""
 
 from game_exceptions import GameOver, EnemyDown, QuitApp
 from models import Player, Enemy
-from settings import ALLOWED_ATTACKS, \
-    MODES, \
-    PLAYER_LIVES, \
-    POINTS_FOR_FIGHT, \
-    POINTS_FOR_KILLING, \
+from settings import MODES, \
+    MODE_NORMAL, \
+    MODE_HARD, \
     MAX_RECORDS_NUMBER, \
-    HARD_MODE_MULTIPLIER, \
     SCORE_FILE
 from functools import reduce
 
@@ -28,6 +25,7 @@ def is_valid_name(name: str) -> bool:
 
 
 def input_name() -> str:
+    """Input and return player name."""
     while True:
         name = input("Enter your name: ")
         if is_valid_name(name):
@@ -35,30 +33,30 @@ def input_name() -> str:
 
 
 def is_valid_input_mode(mode_input: str) -> bool:
+    """Validates mode input"""
     if mode_input in ('1', '2'):
         return True
     return False
 
 
 def input_mode() -> str:
+    """Input and return game mode"""
     while True:
-        mode_input = input('Select game mode:\t 1-Normal.\t2-Hard: ')
+        mode_input = input(f'Select game mode:\t 1-{MODE_NORMAL}.\t2-{MODE_HARD}: ')
         if is_valid_input_mode(mode_input):
             return MODES[mode_input]
 
 
 def play() -> None:
     """Runs the main game"""
-
+    # game level
+    level = 1
     # input name
     name = input_name()
-
     # input game mode
     mode = input_mode()
 
-    # make players
     player = Player(name, mode=mode)
-    level=1
     enemy = Enemy(mode, level)
 
     # main fight
@@ -70,7 +68,7 @@ def play() -> None:
             except EnemyDown:
                 player.on_enemy_down()
                 del enemy
-                level+=1
+                level += 1
                 enemy = Enemy(mode, level)
                 print("\nNew enemy comes.")
 
@@ -81,10 +79,12 @@ def play() -> None:
     finally:
         print_status(player, enemy)
 
-def save_score(player:Player)->None:
+
+def save_score(player: Player) -> None:
+    """ Saves score to board file"""
     player_record = [player.name, player.mode, player.score]
 
-    # reads records from file to list
+    # read records from file to list
     with open(SCORE_FILE, 'r') as file:
         lines = file.readlines()
     del lines[0]
@@ -110,6 +110,7 @@ def save_score(player:Player)->None:
         for record in records:
             file.write(f'{record[0].ljust(name_column_size)}{record[1].ljust(10)}{record[2]}\n')
 
+
 def print_status(player, enemy) -> None:
     """Prints the current game status to console"""
     print(f"\nPlayer: {player.name}."
@@ -119,31 +120,47 @@ def print_status(player, enemy) -> None:
           f"\tLevel: {enemy.level}"
           f"\tEnemy's lives: {enemy.lives}")
 
-def print_score()->None:
-    """Reads score from file and print it"""
+
+def print_score() -> None:
+    """Reads score from file and prints it"""
     with open(SCORE_FILE) as file:
         print(file.read())
 
-def main_menu() -> None:
-    """Displays the main menu of the game"""
+
+def is_valid_menu_input(menu_input: str) -> bool:
+    """ Validates menu user input"""
+    if menu_input in ('1', '2', '3'):
+        return True
+    print('Incorrect input.')
+    return False
+
+
+def main_menu_input() -> str:
+    """Menu user input"""
     while True:
         print("\n----Main Menu----")
-        choice = input('Select command:\n'
-                       '\t1-Start new game\n'
-                       '\t2-Show scores\n'
-                       '\t3-Exit game\n'
-                       '\t: ')
-        if choice == '1':
-            play()
-        elif choice == '2':
-            print_score()
-        elif choice == '3':
-            raise QuitApp
-        else:
-            print('Incorrect command!')
+        menu_choice = input('Select command:\n'
+                            '\t1-Start new game\n'
+                            '\t2-Show scores\n'
+                            '\t3-Exit game\n'
+                            '\t: ')
+        if is_valid_menu_input:
+            return menu_choice
+
+
+def main_menu() -> None:
+    """Displays the main menu of the game"""
+    menu_choice = main_menu_input()
+    if menu_choice == '1':
+        play()
+    elif menu_choice == '2':
+        print_score()
+    elif menu_choice == '3':
+        raise QuitApp
 
 
 if __name__ == "__main__":
+    """ App entry point"""
     try:
         main_menu()
     except QuitApp:

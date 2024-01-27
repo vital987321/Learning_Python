@@ -17,8 +17,3 @@ class EnemyDown(Exception):
 class QuitApp(Exception):
     """Raised if user send command to exit the unfinished game"""
 
-
-class FightError(Exception):
-    """Raised if __fight method got wrong inputs.
-    Normally not expected"""
-    pass

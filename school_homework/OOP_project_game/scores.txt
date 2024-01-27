@@ -8,4 +8,4 @@ Kutrapalli    Normal    7
 sdsf          Normal    7
 adad          Normal    7
 Peter         Normal    6
-John          Hard      2
+111           Normal    6

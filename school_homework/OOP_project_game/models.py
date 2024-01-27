@@ -2,16 +2,19 @@
 
 from game_exceptions import GameOver, \
     EnemyDown, \
-    QuitApp, \
-    FightError
-from settings import ALLOWED_ATTACKS,\
-    MODES,\
-    PLAYER_LIVES,\
-    POINTS_FOR_FIGHT,\
-    POINTS_FOR_KILLING,\
-    MAX_RECORDS_NUMBER,\
-    HARD_MODE_MULTIPLIER,\
-    SCORE_FILE
+    QuitApp
+from settings import ALLOWED_ATTACKS, \
+    MODES, \
+    PLAYER_LIVES, \
+    POINTS_FOR_FIGHT, \
+    POINTS_FOR_KILLING, \
+    MAX_RECORDS_NUMBER, \
+    HARD_MODE_MULTIPLIER, \
+    SCORE_FILE, \
+    PAPER, \
+    STONE, \
+    SCISSORS
+
 from random import randint
 
 
@@ -20,8 +23,8 @@ class Enemy():
     lives: int
     level: int
 
-    def __init__(self, mode: str, level:int):
-        self.level=level
+    def __init__(self, mode: str, level: int):
+        self.level = level
         self.lives = self.level if mode == 'Normal' else self.level * HARD_MODE_MULTIPLIER
 
     def attack(self) -> str:
@@ -29,7 +32,7 @@ class Enemy():
         return ALLOWED_ATTACKS[str(randint(1, 3))]
 
     def decrease_lives(self):
-        '''Decrease enemy's lives'''
+        """Decrease enemy's lives"""
         self.lives -= 1
         if self.lives == 0:
             raise EnemyDown()
@@ -47,30 +50,40 @@ class Player():
         self.score = 0
         self.mode = mode
 
+    @staticmethod
+    def __is_valid_input_attack(attack_input: str) -> bool:
+        """ Validates attack input"""
+        if attack_input == '0':
+            raise QuitApp
+        if attack_input in ('1', '2', '3'):
+            return True
+        print('Incorrect input.')
+        return False
+
+    @staticmethod
+    def __input_attack():
+        while True:
+            attack_input = input('Select attack:\n'
+                                 '\t1 - Paper\n'
+                                 '\t2 - Stone\n'
+                                 '\t3 - Scissors\n'
+                                 '\t(0 - Exit Game)\n'
+                                 '\t: ')
+            if Player.__is_valid_input_attack(attack_input):
+                return ALLOWED_ATTACKS[attack_input]
+
     def attack(self, enemy: Enemy) -> None:
         """
         Asks the user to choose the attack.
         Calls the fight method.
-        Based on the fight result calls corresponding method.
         """
-
         # select player attack
-        while True:
-            try:
-                player_attack = ALLOWED_ATTACKS[input('Select attack:\n'
-                                                      '\t1 - Paper\n'
-                                                      '\t2 - Stone\n'
-                                                      '\t3 - Scissors\n'
-                                                      '\t(0 - Exit Game)\n'
-                                                      '\t: ')]
-                if player_attack == 'Exit Game':
-                    raise QuitApp()
-                break
-            except KeyError:
-                print('Incorrect input.')
-
-        # resolve fight
+        player_attack = self.__input_attack()
+        # fight
         fight_result = self.__fight(player_attack, enemy)
+
+    def handle_fight_result(self, fight_result: int, enemy: Enemy) -> None:
+        """ Handles results of the fight"""
         if fight_result == 1:
             print('You attacked successfully!')
             self.__on_win_fight(enemy)
@@ -79,29 +92,22 @@ class Player():
             self.decrease_lives()
         elif fight_result == 0:
             print("It's a draw!")
-        else:
-            raise FightError
 
-    def __fight(self, player_attack: str, enemy: Enemy) -> int:
+    def __fight(self, player_attack: str, enemy: Enemy) -> None:
         """Resolves player's attack vs enemy's attack"""
         enemy_attack = enemy.attack()
         print(f"Your attack: {player_attack}.  Enemy's attack: {enemy_attack}")
-        if player_attack == enemy_attack:
-            return 0
-        elif player_attack == 'Paper' and enemy_attack == 'Stone':
-            return 1
-        elif player_attack == 'Paper' and enemy_attack == 'Scissors':
-            return -1
-        elif player_attack == 'Stone' and enemy_attack == 'Paper':
-            return -1
-        elif player_attack == 'Stone' and enemy_attack == 'Scissors':
-            return 1
-        elif player_attack == 'Scissors' and enemy_attack == 'Paper':
-            return 1
-        elif player_attack == 'Scissors' and enemy_attack == 'Stone':
-            return -1
-        else:
-            raise FightError
+        attack_pais_outcome = {(PAPER, PAPER): 0,
+                               (PAPER, STONE): 1,
+                               (PAPER, SCISSORS): -1,
+                               (STONE, PAPER): 1,
+                               (STONE, STONE): 0,
+                               (STONE, SCISSORS): -1,
+                               (SCISSORS, PAPER): 1,
+                               (SCISSORS, STONE): -1,
+                               (SCISSORS, SCISSORS): 0}
+        fight_result = attack_pais_outcome[(player_attack, enemy_attack)]
+        self.handle_fight_result(fight_result, enemy)
 
     def decrease_lives(self) -> None:
         """Decreases player's lives"""

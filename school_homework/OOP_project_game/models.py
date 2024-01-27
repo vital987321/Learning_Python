@@ -2,12 +2,11 @@
 
 from game_exceptions import GameOver, \
     EnemyDown, \
-    KeyboardInterrupt, \
+    QuitApp, \
     FightError
 from settings import ALLOWED_ATTACKS,\
     MODES,\
     PLAYER_LIVES,\
-    ENEMY_LIVES,\
     POINTS_FOR_FIGHT,\
     POINTS_FOR_KILLING,\
     MAX_RECORDS_NUMBER,\
@@ -19,9 +18,11 @@ from random import randint
 class Enemy():
     """Class represents the enemy bot player"""
     lives: int
+    level: int
 
-    def __init__(self, mode: str):
-        self.lives = ENEMY_LIVES if mode == 'Normal' else ENEMY_LIVES * HARD_MODE_MULTIPLIER
+    def __init__(self, mode: str, level:int):
+        self.level=level
+        self.lives = self.level if mode == 'Normal' else self.level * HARD_MODE_MULTIPLIER
 
     def attack(self) -> str:
         """randomly returns one of possible enemy's attack"""
@@ -49,7 +50,7 @@ class Player():
     def attack(self, enemy: Enemy) -> None:
         """
         Asks the user to choose the attack.
-        Then calls the fight method.
+        Calls the fight method.
         Based on the fight result calls corresponding method.
         """
 
@@ -63,7 +64,7 @@ class Player():
                                                       '\t(0 - Exit Game)\n'
                                                       '\t: ')]
                 if player_attack == 'Exit Game':
-                    raise KeyboardInterrupt()
+                    raise QuitApp()
                 break
             except KeyError:
                 print('Incorrect input.')
@@ -108,10 +109,13 @@ class Player():
         if self.lives == 0:
             raise GameOver(self.name, self.mode, self.score)
 
-    def add_score(self):
+    def on_enemy_down(self):
+        """ Adds score on enemy down."""
+        print("Congratulation! Enemy down.")
         self.score += POINTS_FOR_KILLING if self.mode == 'Normal' else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER
 
     def __on_win_fight(self, enemy: Enemy) -> None:
-        """Adds score in case successful fight"""
+        """Adds score in case successful fight.
+        calls enemy's method to decrease lives."""
         self.score += POINTS_FOR_FIGHT if self.mode == 'Normal' else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
         enemy.decrease_lives()

@@ -2,8 +2,8 @@
 
 from random import randint
 
-from game_exceptions import GameOver, EnemyDown, QuitApp
-from school_homework.OOP_project_game.validations import is_valid_input_attack
+from game_exceptions import GameOver, EnemyDown, QuitApp, WhiteSpaceInputError, EmptyInputError
+from school_homework.OOP_project_game.validations import is_valid_input_attack, validate_name
 from settings import ALLOWED_ATTACKS, MODE_NORMAL, PLAYER_LIVES, POINTS_FOR_FIGHT, POINTS_FOR_KILLING, \
     HARD_MODE_MULTIPLIER, ATTACK_PAIRS_OUTCOME
 
@@ -22,7 +22,7 @@ class Enemy:
         """randomly returns one of possible enemy's attack"""
         return ALLOWED_ATTACKS[str(randint(1, 3))]
 
-    def decrease_lives(self) -> None:
+    def on_lose_fight(self) -> None:
         """Decrease enemy's lives"""
         self.lives -= 1
         if self.lives == 0:
@@ -32,17 +32,27 @@ class Enemy:
 class Player:
     """Class describes user's player"""
     name: str
-    score: int
-    mode: str
+    score: int = 0
 
-    def __init__(self, name: str, mode: str):
-        self.name = name
+    def __init__(self):
+        self.input_name()
         self.lives = PLAYER_LIVES
-        self.score = 0
-        self.mode = mode
+
+    def input_name(self) -> None:
+        """Input and return player name."""
+        while True:
+            name = input("Enter your name: ")
+            try:
+                validate_name(name)
+                self.name = name
+                break
+            except WhiteSpaceInputError:
+                print("Whitespaces are not allowed in the name.")
+            except EmptyInputError:
+                print('Name cannot be empty.')
 
     @staticmethod
-    def __input_attack() -> str:
+    def attack() -> str:
         """ Asks for user attack input"""
         while True:
             attack_input = input('Select attack:\n'
@@ -57,43 +67,48 @@ class Player:
                 return ALLOWED_ATTACKS[attack_input]
             print('Incorrect input.')
 
-    def attack(self, enemy: Enemy) -> None:
-        """Asks the user to choose the attack.
-        Calls the fight method."""
-        player_attack = self.__input_attack()
-        self.__fight(player_attack, enemy)
-
-    def handle_fight_result(self, fight_result: int, enemy: Enemy) -> None:
-        """ Handles results of the fight"""
-        if fight_result == 1:
-            print('You attacked successfully!')
-            self.__on_win_fight(enemy)
-        elif fight_result == -1:
-            print("You missed!")
-            self.__decrease_lives()
-        elif fight_result == 0:
-            print("It's a draw!")
-
-    def __fight(self, player_attack: str, enemy: Enemy) -> None:
-        """Resolves player's attack vs enemy's attack"""
-        enemy_attack = enemy.attack()
-        print(f"Your attack: {player_attack}.  Enemy's attack: {enemy_attack}")
-        fight_result = ATTACK_PAIRS_OUTCOME[(player_attack, enemy_attack)]
-        self.handle_fight_result(fight_result, enemy)
-
-    def __decrease_lives(self) -> None:
+    def on_lose_fight(self) -> None:
         """Decreases player's lives"""
         self.lives -= 1
         if self.lives == 0:
             raise GameOver
 
-    def on_enemy_down(self):
+    def on_win_fight(self, mode) -> None:
+        """Adds score in case successful fight."""
+        self.score += POINTS_FOR_FIGHT if mode == MODE_NORMAL else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
+
+
+class Battle:
+    player: Player
+    enemy: Enemy
+    mode: str
+
+    def __init__(self, player: Player, enemy: Enemy, mode: str) -> None:
+        self.player = player
+        self.enemy = enemy
+        self.mode = mode
+
+    def fight(self) -> None:
+        """Resolves player's attack vs enemy's attack"""
+        enemy_attack = self.enemy.attack()
+        player_attack = self.player.attack()
+        print(f"Your attack: {player_attack}.  Enemy's attack: {enemy_attack}")
+        fight_result = ATTACK_PAIRS_OUTCOME[(player_attack, enemy_attack)]
+        self.handle_fight_result(fight_result)
+
+    def handle_fight_result(self, fight_result: int) -> None:
+        """ Handles results of the fight"""
+        if fight_result == 1:
+            print('You attacked successfully!')
+            self.player.on_win_fight(self.mode)
+            self.enemy.on_lose_fight()
+        elif fight_result == -1:
+            print("You missed!")
+            self.player.on_lose_fight()
+        elif fight_result == 0:
+            print("It's a draw!")
+
+    def on_enemy_down(self, mode):
         """ Adds score on enemy down."""
         print("Congratulation! Enemy down.")
-        self.score += POINTS_FOR_KILLING if self.mode == MODE_NORMAL else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER
-
-    def __on_win_fight(self, enemy: Enemy) -> None:
-        """Adds score in case successful fight.
-        calls enemy's method to decrease lives."""
-        self.score += POINTS_FOR_FIGHT if self.mode == MODE_NORMAL else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
-        enemy.decrease_lives()
+        self.player.score += POINTS_FOR_KILLING if mode == MODE_NORMAL else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER

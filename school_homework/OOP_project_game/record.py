@@ -29,8 +29,13 @@ class PlayerRecord:
 
 class GameRecord:
     records: list[PlayerRecord] = []
+    mode: str
 
-    def __init__(self):
+    def __init__(self, mode: str):
+        self.mode = mode
+        self.read_records()
+
+    def read_records(self) -> None:
         with open(SCORE_FILE, 'r') as file:
             lines = file.readlines()
         del lines[0]  # remove table title
@@ -44,7 +49,7 @@ class GameRecord:
             raise RecordInRecordsError
 
     def add_record(self, player: Player) -> None:
-        player_record = PlayerRecord(player.name, player.mode, player.score)
+        player_record = PlayerRecord(player.name, self.mode, player.score)
         try:
             self._validate_record(player_record)
             self.records.append(player_record)

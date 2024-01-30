@@ -17,3 +17,12 @@ SCORE_FILE = 'scores.txt'
 PAPER = 'Paper'
 STONE = 'Stone'
 SCISSORS = 'Scissors'
+ATTACK_PAIRS_OUTCOME = {(PAPER, PAPER): 0,
+                        (PAPER, STONE): 1,
+                        (PAPER, SCISSORS): -1,
+                        (STONE, PAPER): 1,
+                        (STONE, STONE): 0,
+                        (STONE, SCISSORS): -1,
+                        (SCISSORS, PAPER): 1,
+                        (SCISSORS, STONE): -1,
+                        (SCISSORS, SCISSORS): 0}

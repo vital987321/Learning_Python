@@ -12,3 +12,11 @@ class EnemyDown(Exception):
 
 class QuitApp(Exception):
     """Raised if user send command to exit the unfinished game"""
+
+
+class WhiteSpaceInputError(Exception):
+    """ Raised if user input contains white spaces"""
+
+
+class EmptyInputError(Exception):
+    """ Raised if user input is an empty string"""

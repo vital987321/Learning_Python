@@ -9,10 +9,7 @@ from settings import ALLOWED_ATTACKS, \
     POINTS_FOR_FIGHT, \
     POINTS_FOR_KILLING, \
     HARD_MODE_MULTIPLIER, \
-    PAPER, \
-    STONE, \
-    SCISSORS
-
+    ATTACK_PAIRS_OUTCOME
 from random import randint
 
 
@@ -33,7 +30,7 @@ class Enemy():
         """Decrease enemy's lives"""
         self.lives -= 1
         if self.lives == 0:
-            raise EnemyDown()
+            raise EnemyDown
 
 
 class Player():
@@ -51,15 +48,12 @@ class Player():
     @staticmethod
     def __is_valid_input_attack(attack_input: str) -> bool:
         """ Validates attack input"""
-        if attack_input == '0':
-            raise QuitApp
-        if attack_input in ('1', '2', '3'):
-            return True
-        print('Incorrect input.')
-        return False
+        from game import get_allowed_options
+        return attack_input in get_allowed_options(ALLOWED_ATTACKS)
 
     @staticmethod
-    def __input_attack():
+    def __input_attack() -> str:
+        """ Asks for user attack input"""
         while True:
             attack_input = input('Select attack:\n'
                                  '\t1 - Paper\n'
@@ -68,15 +62,16 @@ class Player():
                                  '\t(0 - Exit Game)\n'
                                  '\t: ')
             if Player.__is_valid_input_attack(attack_input):
+                if attack_input == '0':
+                    raise QuitApp
                 return ALLOWED_ATTACKS[attack_input]
+            print('Incorrect input.')
 
     def attack(self, enemy: Enemy) -> None:
         """Asks the user to choose the attack.
         Calls the fight method."""
-        # select player attack
         player_attack = self.__input_attack()
-        # fight
-        fight_result = self.__fight(player_attack, enemy)
+        self.__fight(player_attack, enemy)
 
     def handle_fight_result(self, fight_result: int, enemy: Enemy) -> None:
         """ Handles results of the fight"""
@@ -93,23 +88,14 @@ class Player():
         """Resolves player's attack vs enemy's attack"""
         enemy_attack = enemy.attack()
         print(f"Your attack: {player_attack}.  Enemy's attack: {enemy_attack}")
-        attack_pais_outcome = {(PAPER, PAPER): 0,
-                               (PAPER, STONE): 1,
-                               (PAPER, SCISSORS): -1,
-                               (STONE, PAPER): 1,
-                               (STONE, STONE): 0,
-                               (STONE, SCISSORS): -1,
-                               (SCISSORS, PAPER): 1,
-                               (SCISSORS, STONE): -1,
-                               (SCISSORS, SCISSORS): 0}
-        fight_result = attack_pais_outcome[(player_attack, enemy_attack)]
+        fight_result = ATTACK_PAIRS_OUTCOME[(player_attack, enemy_attack)]
         self.handle_fight_result(fight_result, enemy)
 
     def decrease_lives(self) -> None:
         """Decreases player's lives"""
         self.lives -= 1
         if self.lives == 0:
-            raise GameOver(self.name, self.mode, self.score)
+            raise GameOver
 
     def on_enemy_down(self):
         """ Adds score on enemy down."""

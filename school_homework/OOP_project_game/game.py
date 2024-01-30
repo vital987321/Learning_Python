@@ -59,7 +59,7 @@ class Game:
                 try:
                     battle.fight()
                 except EnemyDown:
-                    battle.on_enemy_down(self.mode)
+                    self.player.on_enemy_down(self.mode)
                     self.new_enemy()
                     print("\nNew enemy comes.")
         except GameOver:

@@ -77,6 +77,11 @@ class Player:
         """Adds score in case successful fight."""
         self.score += POINTS_FOR_FIGHT if mode == MODE_NORMAL else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
 
+    def on_enemy_down(self, mode):
+        """ Adds score on enemy down."""
+        print("Congratulation! Enemy down.")
+        self.score += POINTS_FOR_KILLING if mode == MODE_NORMAL else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER
+
 
 class Battle:
     player: Player
@@ -107,8 +112,3 @@ class Battle:
             self.player.on_lose_fight()
         elif fight_result == 0:
             print("It's a draw!")
-
-    def on_enemy_down(self, mode):
-        """ Adds score on enemy down."""
-        print("Congratulation! Enemy down.")
-        self.player.score += POINTS_FOR_KILLING if mode == MODE_NORMAL else POINTS_FOR_KILLING * HARD_MODE_MULTIPLIER

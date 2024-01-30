@@ -1,19 +1,14 @@
 """ module contains Enemy Class and Player Class"""
 
-from game_exceptions import GameOver, \
-    EnemyDown, \
-    QuitApp
-from settings import ALLOWED_ATTACKS, \
-    MODE_NORMAL, \
-    PLAYER_LIVES, \
-    POINTS_FOR_FIGHT, \
-    POINTS_FOR_KILLING, \
-    HARD_MODE_MULTIPLIER, \
-    ATTACK_PAIRS_OUTCOME
 from random import randint
 
+from game_exceptions import GameOver, EnemyDown, QuitApp
+from school_homework.OOP_project_game.validations import is_valid_input_attack
+from settings import ALLOWED_ATTACKS, MODE_NORMAL, PLAYER_LIVES, POINTS_FOR_FIGHT, POINTS_FOR_KILLING, \
+    HARD_MODE_MULTIPLIER, ATTACK_PAIRS_OUTCOME
 
-class Enemy():
+
+class Enemy:
     """Class represents the enemy bot player"""
     lives: int
     level: int
@@ -22,7 +17,8 @@ class Enemy():
         self.level = level
         self.lives = self.level if mode == MODE_NORMAL else self.level * HARD_MODE_MULTIPLIER
 
-    def attack(self) -> str:
+    @staticmethod
+    def attack() -> str:
         """randomly returns one of possible enemy's attack"""
         return ALLOWED_ATTACKS[str(randint(1, 3))]
 
@@ -33,7 +29,7 @@ class Enemy():
             raise EnemyDown
 
 
-class Player():
+class Player:
     """Class describes user's player"""
     name: str
     score: int
@@ -46,12 +42,6 @@ class Player():
         self.mode = mode
 
     @staticmethod
-    def __is_valid_input_attack(attack_input: str) -> bool:
-        """ Validates attack input"""
-        from game import get_allowed_options
-        return attack_input in get_allowed_options(ALLOWED_ATTACKS)
-
-    @staticmethod
     def __input_attack() -> str:
         """ Asks for user attack input"""
         while True:
@@ -61,7 +51,7 @@ class Player():
                                  '\t3 - Scissors\n'
                                  '\t(0 - Exit Game)\n'
                                  '\t: ')
-            if Player.__is_valid_input_attack(attack_input):
+            if is_valid_input_attack(attack_input):
                 if attack_input == '0':
                     raise QuitApp
                 return ALLOWED_ATTACKS[attack_input]
@@ -80,7 +70,7 @@ class Player():
             self.__on_win_fight(enemy)
         elif fight_result == -1:
             print("You missed!")
-            self.decrease_lives()
+            self.__decrease_lives()
         elif fight_result == 0:
             print("It's a draw!")
 
@@ -91,7 +81,7 @@ class Player():
         fight_result = ATTACK_PAIRS_OUTCOME[(player_attack, enemy_attack)]
         self.handle_fight_result(fight_result, enemy)
 
-    def decrease_lives(self) -> None:
+    def __decrease_lives(self) -> None:
         """Decreases player's lives"""
         self.lives -= 1
         if self.lives == 0:

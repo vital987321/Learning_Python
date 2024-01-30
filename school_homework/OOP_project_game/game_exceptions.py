@@ -7,7 +7,6 @@ class GameOver(Exception):
 
 class EnemyDown(Exception):
     """Raised in case enemy lost all lives"""
-    pass
 
 
 class QuitApp(Exception):
@@ -20,3 +19,7 @@ class WhiteSpaceInputError(Exception):
 
 class EmptyInputError(Exception):
     """ Raised if user input is an empty string"""
+
+
+class RecordInRecordsError(Exception):
+    """ Raised if user record already exists"""

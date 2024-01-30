@@ -68,6 +68,6 @@ class GameRecord:
         records = self._prepared_records_to_save
         name_column_size = len(max(records).name) + 4
         with open(SCORE_FILE, 'w') as file:
-            file.write(f'{"NAME".ljust(name_column_size)}{"MODE".ljust(10)}SCORE\n')
+            file.write(record_file_title_row(name_column_size))
             for record in records:
                 file.write(record.as_file_row(name_column_size))

@@ -1,0 +1,11 @@
+NAME          MODE      SCORE
+Mike          Normal    35
+blackhole     Normal    25
+111           Normal    15
+sfsdf         Normal    14
+dad           Normal    13
+Tereza        Normal    7
+Jimy          Normal    7
+Kutrapalli    Normal    7
+sdsf          Normal    7
+adad          Normal    7
